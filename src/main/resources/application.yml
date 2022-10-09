@@ -17,12 +17,17 @@ spring:
 
   cloud:
     gateway:
+      # CORS 설정
       default-filters:
-        - name: GlobalFilter
-          args:
-            baseMessage: Spring Cloud Gateway Global Filter
-            preLogger: true
-            postLogger: true
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:3000'
+#            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods: '*'
+        add-to-simple-url-handler-mapping: true
       routes:
 
         # 로그인 API
@@ -47,7 +52,7 @@ spring:
 
         # 회원 API
         # 로그인과 회원가입을 제외한 회원 서비스로의 API 는 모두 권한 인증 처리
-        - # TODO: feign api = /members/feign, service api = /member --> 통일 시키키
+        # TODO: feign api = /members/feign, service api = /member --> 통일 시키키
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -62,7 +67,7 @@ spring:
         - id: order-payment-service
           uri: lb://ORDER-PAYMENT-SERVICE
           predicates:
-            - Path=/order-payment-service/orders/**
+            - Path=/order-payment-service/**
             - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
