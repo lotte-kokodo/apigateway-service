@@ -68,7 +68,7 @@ spring:
           uri: lb://ORDER-PAYMENT-SERVICE
           predicates:
             - Path=/order-payment-service/**
-            - Method=GET,POST
+            - Method=GET,POST,PATCH
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-payment-service/(?<segment>.*), /$\{segment}
