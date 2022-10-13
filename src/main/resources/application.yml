@@ -85,6 +85,18 @@ spring:
             - RewritePath=/product-service/(?<segment>.*), /$\{segment}
 #            - AuthorizationHeaderFilter
 
+        # 정산 서비스
+        - id: calculate-service
+          uri: lb://CALCULATE-SERVICE
+          predicates:
+            - Path=/calculate-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-payment-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+
 
 token:
   secret: member_token
