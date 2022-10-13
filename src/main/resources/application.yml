@@ -85,6 +85,17 @@ spring:
             - RewritePath=/product-service/(?<segment>.*), /$\{segment}
 #            - AuthorizationHeaderFilter
 
+        # 프로모션 서비스 (사용자 기능)
+        - id: promotion-service
+          uri: lb://PROMOTION-SERVICE
+          predicates:
+            - Path=/promotion-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
 
 token:
   secret: member_token
