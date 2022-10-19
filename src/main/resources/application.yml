@@ -50,7 +50,7 @@ spring:
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/member/signup/**
-            - Method=POST
+            - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
