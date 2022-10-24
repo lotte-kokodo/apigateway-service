@@ -50,7 +50,7 @@ spring:
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/member/signup/**
-            - Method=GET,POST
+            - Method=POST, GET
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -99,7 +99,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
 
         # 정산 서비스
         - id: calculate-service
