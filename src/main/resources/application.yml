@@ -28,7 +28,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOriginPatterns: '*'
+            allowedOrigins: '*'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods: '*'
@@ -69,14 +69,14 @@ spring:
             # - AuthorizationHeaderFilter
 
         # 주문 서비스
-        - id: order-payment-service
-          uri: lb://ORDER-PAYMENT-SERVICE
+        - id: order-service
+          uri: lb://ORDER-SERVICE
           predicates:
-            - Path=/order-payment-service/**
+            - Path=/order-service/**
             - Method=GET,POST,PATCH
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/order-payment-service/(?<segment>.*), /$\{segment}
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 #            - AuthorizationHeaderFilter
 
         # 상품 서비스 (사용자 기능)
