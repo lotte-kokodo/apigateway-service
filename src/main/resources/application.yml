@@ -8,7 +8,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:9001/eureka
+      defaultZone: http://18.177.67.173:9001/eureka
 
 spring:
   application:
@@ -28,7 +28,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:9090'
+            allowedOrigins: '*'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods: '*'
