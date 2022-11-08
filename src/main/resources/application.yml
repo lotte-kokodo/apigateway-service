@@ -28,7 +28,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'https://api.kokodo.shop'
+            allowedOrigins: 'http://api.kokodo.shop'
 #            allowedOriginPatterns: '*'
 #            allow-credentials: true
             allowedHeaders: '*'
