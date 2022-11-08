@@ -28,8 +28,9 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOriginPatterns: '*'
-            allow-credentials: true
+            allowedOrigins: 'https://api.kokodo.shop'
+#            allowedOriginPatterns: '*'
+#            allow-credentials: true
             allowedHeaders: '*'
             allowedMethods: '*'
         add-to-simple-url-handler-mapping: true
