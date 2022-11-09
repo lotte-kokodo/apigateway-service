@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {

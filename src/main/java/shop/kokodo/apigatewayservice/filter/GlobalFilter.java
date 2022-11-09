@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import reactor.core.publisher.Mono;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @Component
 @Slf4j
 public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
@@ -24,7 +24,6 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
-
             log.info("Global PRE filter: request id -> {}", config.getBaseMessage());
 
             if(config.isPreLogger()){
