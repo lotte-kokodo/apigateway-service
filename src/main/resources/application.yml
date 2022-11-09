@@ -24,15 +24,15 @@ spring:
     gateway:
       # CORS 설정
       default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: '*'
-#            allowedOriginPatterns: '*'
-#            allow-credentials: true
-            allowedHeaders: '*'
-            allowedMethods: '*'
+#            allowedOrigins: '*'
+            allowedOriginPatterns: "*"
+            allow-credentials: true
+            allowedHeaders: "*"
+            allowedMethods: "*"
         add-to-simple-url-handler-mapping: true
       routes:
 
