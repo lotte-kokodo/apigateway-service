@@ -68,7 +68,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-             - MemberAuthenticationFilter
+            - MemberAuthenticationFilter
 
         # 주문 서비스
         - id: order-service
@@ -100,7 +100,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
-           - MemberAuthenticationFilter
+            - MemberAuthenticationFilter
 
         # 정산 서비스
         - id: calculate-service
