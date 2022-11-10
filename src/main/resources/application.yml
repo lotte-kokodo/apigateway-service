@@ -1,0 +1,156 @@
+server:
+  port: 8001
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:9001/eureka
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      # CORS 설정
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:9090'
+            #            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods: '*'
+        add-to-simple-url-handler-mapping: true
+      routes:
+
+        # 로그인 API
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        # OAuth (Naver, Kakao)
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/oauth/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        # 회원가입 API
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/member/signup
+            - Method=POST, GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        # 회원 API
+        # 로그인과 회원가입을 제외한 회원 서비스로의 API 는 모두 권한 인증 처리
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - MemberAuthenticationFilter
+
+        # 주문 서비스
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
+            - Method=GET,POST,PATCH
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+            - MemberAuthenticationFilter
+
+        # 상품 서비스 (사용자 기능)
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /$\{segment}
+
+        # 프로모션 서비스 (사용자 기능)
+        - id: promotion-service
+          uri: lb://PROMOTION-SERVICE
+          predicates:
+            - Path=/promotion-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
+            - MemberAuthenticationFilter
+
+        # 정산 서비스
+        - id: calculate-service
+          uri: lb://CALCULATE-SERVICE
+          predicates:
+            - Path=/calculate-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/calculate-service/(?<segment>.*), /$\{segment}
+        #   - SellerAuthenticationFilter
+
+        # 셀러 서비스
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/seller/signup
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+            - SellerAuthenticationFilter
+
+token:
+  member:
+    secret: member_token
+  seller:
+    secret: seller_token
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace, busrefresh, info, prometheus, metrics
