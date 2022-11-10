@@ -13,13 +13,6 @@ eureka:
 spring:
   application:
     name: apigateway-service
-  # RabbitMQ 등록
-  rabbitmq:
-    host: 127.0.0.1
-    #RabbitMq가 접근할 때 사용하는 port
-    port: 5672
-    username: guest
-    password: guest
   cloud:
     gateway:
       # CORS 설정
