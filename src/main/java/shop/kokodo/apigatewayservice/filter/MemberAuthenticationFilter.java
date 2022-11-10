@@ -34,6 +34,7 @@ public class MemberAuthenticationFilter extends AbstractGatewayFilterFactory<Mem
         return ((exchange, chain) -> {
             ServerHttpRequest req = exchange.getRequest();
 
+            // TODO: Header AUTHORIZATION Null 처리
             String header = req.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String accessToken = (header != null && header.startsWith(TOKEN_PREFIX)) ? header.replace(TOKEN_PREFIX,"") : null;
 
