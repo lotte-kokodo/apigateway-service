@@ -64,6 +64,7 @@ spring:
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/**
+            - Method=POST, GET
             - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
