@@ -13,13 +13,6 @@ eureka:
 spring:
   application:
     name: apigateway-service
-  # RabbitMQ 등록
-  rabbitmq:
-    host: 127.0.0.1
-    #RabbitMq가 접근할 때 사용하는 port
-    port: 5672
-    username: guest
-    password: guest
   cloud:
     gateway:
       # CORS 설정
@@ -46,6 +39,16 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
 
+        # OAuth (Naver, Kakao)
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/oauth/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
         # 회원가입 API
         - id: member-service
           uri: lb://MEMBER-SERVICE
@@ -58,16 +61,15 @@ spring:
 
         # 회원 API
         # 로그인과 회원가입을 제외한 회원 서비스로의 API 는 모두 권한 인증 처리
-        # TODO: feign api = /members/feign, service api = /member --> 통일 시키키
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/**
-            - Method=GET
+            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-            # - AuthorizationHeaderFilter
+            - MemberAuthenticationFilter
 
         # 주문 서비스
         - id: order-service
@@ -78,7 +80,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
+            - MemberAuthenticationFilter
 
         # 상품 서비스 (사용자 기능)
         - id: product-service
@@ -89,7 +91,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/product-service/(?<segment>.*), /$\{segment}
-        #   - AuthorizationHeaderFilter
 
         # 프로모션 서비스 (사용자 기능)
         - id: promotion-service
@@ -100,7 +101,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
 
         # 정산 서비스
         - id: calculate-service
@@ -111,22 +111,53 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/calculate-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
+        #   - SellerAuthenticationFilter
 
         # 셀러 서비스
         - id: seller-service
           uri: lb://SELLER-SERVICE
           predicates:
-          - Path=/seller-service/**
-          - Method=GET,POST
+            - Path=/seller-service/login
+            - Method=POST
           filters:
-          - RemoveRequestHeader=Cookie
-          - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
-#          - AuthorizationHeaderFilter
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/seller/signup
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        # 회원 서비스에서 조회하는 API
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/seller/names
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        # 판매자 로그인 후 사용 가능한 API
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+            - SellerAuthenticationFilter
 
 token:
-  expiration_time: 86400000
-  secret: member_token
+  member:
+    secret: member_token
+  seller:
+    secret: seller_token
 
 management:
   endpoints:
