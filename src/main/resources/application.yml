@@ -65,6 +65,7 @@ spring:
           predicates:
             - Path=/member-service/**
             - Method=POST, GET
+            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -100,7 +101,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
-            - MemberAuthenticationFilter
+#            - MemberAuthenticationFilter
 
         # 정산 서비스
         - id: calculate-service
@@ -132,6 +133,17 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
 
+        # 회원 서비스에서 조회하는 API
+        - id: seller-service
+          uri: lb://SELLER-SERVICE
+          predicates:
+            - Path=/seller-service/seller/names
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
+
+        # 판매자 로그인 후 사용 가능한 API
         - id: seller-service
           uri: lb://SELLER-SERVICE
           predicates:
