@@ -21,7 +21,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:9090'
+            allowedOrigins: '*'
             #            allow-credentials: true
             allowedHeaders: '*'
             allowedMethods: '*'
@@ -65,7 +65,6 @@ spring:
           predicates:
             - Path=/member-service/**
             - Method=POST, GET
-            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -76,7 +75,7 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
-            - Method=GET,POST,PATCH
+            - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /$\{segment}
@@ -101,7 +100,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/promotion-service/(?<segment>.*), /$\{segment}
-#            - MemberAuthenticationFilter
 
         # 정산 서비스
         - id: calculate-service
@@ -112,7 +110,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/calculate-service/(?<segment>.*), /$\{segment}
-        #   - SellerAuthenticationFilter
 
         # 셀러 서비스
         - id: seller-service
