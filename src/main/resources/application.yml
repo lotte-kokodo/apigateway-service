@@ -153,6 +153,36 @@ spring:
             - RewritePath=/seller-service/(?<segment>.*), /$\{segment}
             - SellerAuthenticationFilter
 
+        # member docs
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/docs/index.html
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        # order docs
+        - id: order-service
+          uri: lb://order-SERVICE
+          predicates:
+            - Path=/order-service/docs/index.html
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+
+        # calculate docs
+        - id: calculate-service
+          uri: lb://calculate-SERVICE
+          predicates:
+            - Path=/calculate-service/docs/index.html
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/calculate-service/(?<segment>.*), /$\{segment}
+
 token:
   member:
     secret: member_token
